@@ -35,6 +35,5 @@ jobs:
         run: |
           echo "This is a test for build"
           echo "Build number is $BUILD_NUMBER"
-          ls
           echo "JPETSTOREWEB=${MCMPDEMO_DOCKER}/jpetstoreweb:${BUILD_NUMBER}" >> $GITHUB_ENV
-          echo "${{JPETSTOREWEB}}"
+          echo "${{env.JPETSTOREWEB}}"
