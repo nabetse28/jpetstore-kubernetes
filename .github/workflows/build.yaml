@@ -12,14 +12,18 @@ on:
       - master
 
 # All the environment variables are defined here
-# env:
+env:
+  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+  DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+  MCMPDEMO_DOCKER: ${{ secrets.MCMPDEMO_DOCKER }}
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
   build:
     runs-on: ubuntu-latest
-
+    outputs:
+      build_number: ${{ steps.buildnumber.outputs.build_number }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -31,3 +35,6 @@ jobs:
         run: |
           echo "This is a test for build"
           echo "Build number is $BUILD_NUMBER"
+          ls
+          echo "JPETSTOREWEB=${MCMPDEMO_DOCKER}/jpetstoreweb:${BUILD_NUMBER}" >> $GITHUB_ENV
+          echo "$JPETSTOREWEB"
