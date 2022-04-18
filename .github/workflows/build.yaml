@@ -32,11 +32,6 @@ jobs:
         with:
           token: ${{secrets.github_token}}
 
-      # - name: Setting environment variables
-      #   run: |
-      #     echo "JPETSTOREWEB=$MCMPDEMO_DOCKER/jpetstoreweb:$BUILD_NUMBER" >> $GITHUB_ENV
-      #     echo "JPETSTOREDB=$MCMPDEMO_DOCKER/jpetstoredb:latest" >> $GITHUB_ENV
-
       - name: Login to DockerHub
         uses: docker/login-action@v1
         with:
