@@ -20,6 +20,7 @@ env:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
+  # echo "JPETSTOREWEB=$MCMPDEMO_DOCKER/jpetstoreweb:$BUILD_NUMBER" >> $GITHUB_ENV
   build:
     runs-on: ubuntu-latest
     outputs:
@@ -36,6 +37,7 @@ jobs:
           echo "This is a test for build"
           echo "Build number is $BUILD_NUMBER"
           echo "TODAY=$(date -I)" >> $GITHUB_ENV
-      # echo "JPETSTOREWEB=$MCMPDEMO_DOCKER/jpetstoreweb:$BUILD_NUMBER" >> $GITHUB_ENV
+
       - name: Get env
-        ruin: echo "$TODAY"
+        ruin: |
+          echo ${{ env.TODAY }}
