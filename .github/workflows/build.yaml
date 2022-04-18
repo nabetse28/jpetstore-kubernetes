@@ -31,13 +31,21 @@ jobs:
         uses: einaregilsson/build-number@v3
         with:
           token: ${{secrets.github_token}}
-      - name: Build
+
+      - name: Setting environment variables
         run: |
-          echo "This is a test for build"
-          echo "Build number is $BUILD_NUMBER"
-          echo "TODAY=$(date -I)" >> $GITHUB_ENV
           echo "JPETSTOREWEB=$MCMPDEMO_DOCKER/jpetstoreweb:$BUILD_NUMBER" >> $GITHUB_ENV
-      - name: Get env
+          echo "JPETSTOREDB=$MCMPDEMO_DOCKER/jpetstoredb:latest" >> $GITHUB_ENV
+
+      - name: Build Docker Images
+        env:
+          JPETSTOREWEB: $MCMPDEMO_DOCKER/jpetstoreweb:$BUILD_NUMBER
+          JPETSTOREDB: $MCMPDEMO_DOCKER/jpetstoredb:latest
         run: |
-          echo $TODAY
+          echo "Building docker images..."
           echo $JPETSTOREWEB
+          docker build -t $JPETSTOREWEB ./jpetstore
+          docker build -t $JPETSTOREDB .
+          docker login $MCMPDEMO_DOCKER -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+          docker push $JPETSTOREWEB
+          docker push $JPETSTOREDB
