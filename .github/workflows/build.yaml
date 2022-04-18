@@ -40,11 +40,13 @@ jobs:
 
       - name: Build Docker Images
         env:
-          JPETSTOREWEB: ${{env.DOCKER_USERNAME}}/jpetstoreweb:${{env.BUILD_NUMBER}}-${{github.sha}}
-          JPETSTOREDB: ${{env.DOCKER_USERNAME}}/jpetstoredb:${{env.BUILD_NUMBER}}-${{github.sha}}
+          JPETSTOREWEB: ${{env.DOCKER_USERNAME}}/jpetstoreweb
+          JPETSTOREDB: ${{env.DOCKER_USERNAME}}/jpetstoredb
         run: |
           echo "Building docker images..."
           docker build -t ${{env.JPETSTOREWEB}} ./jpetstore
           docker build -t ${{env.JPETSTOREDB}} .
-          docker push ${{env.JPETSTOREWEB}}
-          docker push ${{env.JPETSTOREDB}}
+          docker push ${{env.JPETSTOREWEB}}:${{env.BUILD_NUMBER}}-${{github.sha}}
+          docker push ${{env.JPETSTOREWEB}}:latest
+          docker push ${{env.JPETSTOREDB}}:${{env.BUILD_NUMBER}}-${{github.sha}}
+          docker push ${{env.JPETSTOREDB}}:latest
