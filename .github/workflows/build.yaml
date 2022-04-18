@@ -44,8 +44,8 @@ jobs:
           JPETSTOREDB: ${{env.DOCKER_USERNAME}}/jpetstoredb
         run: |
           echo "Building docker images..."
-          docker build -t ${{env.JPETSTOREWEB}} ./jpetstore
-          docker build -t ${{env.JPETSTOREDB}} .
+          docker build -t ${{env.JPETSTOREWEB}}:${{env.BUILD_NUMBER}}-${{github.sha}} -t ${{env.JPETSTOREWEB}}:latest ./jpetstore
+          docker build -t ${{env.JPETSTOREDB}}:${{env.BUILD_NUMBER}}-${{github.sha}} -t ${{env.JPETSTOREDB}}:latest .
           docker push ${{env.JPETSTOREWEB}}:${{env.BUILD_NUMBER}}-${{github.sha}}
           docker push ${{env.JPETSTOREWEB}}:latest
           docker push ${{env.JPETSTOREDB}}:${{env.BUILD_NUMBER}}-${{github.sha}}
