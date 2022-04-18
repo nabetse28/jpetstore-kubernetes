@@ -45,7 +45,7 @@ jobs:
 
       - name: Build Docker Images
         env:
-          JPETSTOREWEB: ${{env.MCMPDEMO_DOCKER}}/jpetstoreweb:${BUILD_NUMBER}
+          JPETSTOREWEB: ${{env.MCMPDEMO_DOCKER}}/jpetstoreweb:${{env.BUILD_NUMBER}}
           JPETSTOREDB: ${{env.MCMPDEMO_DOCKER}}/jpetstoredb:latest
         run: |
           echo "Building docker images..."
