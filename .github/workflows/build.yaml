@@ -35,7 +35,7 @@ jobs:
         run: |
           echo "This is a test for build"
           echo "Build number is $BUILD_NUMBER"
-          echo "today=$(date -I)" >> $GITHUB_ENV
-          echo "JPETSTOREWEB=${MCMPDEMO_DOCKER}/jpetstoreweb:${BUILD_NUMBER}" >> $GITHUB_ENV
-          echo "Today is ${{env.today}}"
-          echo "Today is $today"
+          echo "TODAY=$(date -I)" >> $GITHUB_ENV
+          echo "JPETSTOREWEB='$MCMPDEMO_DOCKER/jpetstoreweb:$BUILD_NUMBER'" >> $GITHUB_ENV
+      - name: Get env
+        ruin: echo $TODAY
