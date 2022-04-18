@@ -49,9 +49,7 @@ jobs:
           JPETSTOREDB: ${{env.MCMPDEMO_DOCKER}}/jpetstoredb:latest
         run: |
           echo "Building docker images..."
-          echo $JPETSTOREWEB
           docker build -t ${{env.JPETSTOREWEB}} ./jpetstore
           docker build -t ${{env.JPETSTOREDB}} .
-          docker login ${{env.MCMPDEMO_DOCKER}} -u ${{env.DOCKER_USERNAME}} -p ${{env.DOCKER_PASSWORD}}
           docker push ${{env.JPETSTOREWEB}}
           docker push ${{env.JPETSTOREDB}}
