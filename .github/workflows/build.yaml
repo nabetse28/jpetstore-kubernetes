@@ -37,6 +37,7 @@ jobs:
           echo "Build number is $BUILD_NUMBER"
           echo "TODAY=$(date -I)" >> $GITHUB_ENV
           echo "JPETSTOREWEB=$MCMPDEMO_DOCKER/jpetstoreweb:$BUILD_NUMBER" >> $GITHUB_ENV
+          echo $TODAY
           echo $JPETSTOREWEB
       - name: Get env
         run: echo $TODAY
