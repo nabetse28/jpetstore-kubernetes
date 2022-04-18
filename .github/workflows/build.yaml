@@ -32,20 +32,26 @@ jobs:
         with:
           token: ${{secrets.github_token}}
 
-      - name: Setting environment variables
-        run: |
-          echo "JPETSTOREWEB=$MCMPDEMO_DOCKER/jpetstoreweb:$BUILD_NUMBER" >> $GITHUB_ENV
-          echo "JPETSTOREDB=$MCMPDEMO_DOCKER/jpetstoredb:latest" >> $GITHUB_ENV
+      # - name: Setting environment variables
+      #   run: |
+      #     echo "JPETSTOREWEB=$MCMPDEMO_DOCKER/jpetstoreweb:$BUILD_NUMBER" >> $GITHUB_ENV
+      #     echo "JPETSTOREDB=$MCMPDEMO_DOCKER/jpetstoredb:latest" >> $GITHUB_ENV
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ env.DOCKER_USERNAME }}
+          password: ${{ env.DOCKER_PASSWORD }}
 
       - name: Build Docker Images
         env:
-          JPETSTOREWEB: $MCMPDEMO_DOCKER/jpetstoreweb:$BUILD_NUMBER
-          JPETSTOREDB: $MCMPDEMO_DOCKER/jpetstoredb:latest
+          JPETSTOREWEB: ${{env.MCMPDEMO_DOCKER}}/jpetstoreweb:${BUILD_NUMBER}
+          JPETSTOREDB: ${{env.MCMPDEMO_DOCKER}}/jpetstoredb:latest
         run: |
           echo "Building docker images..."
           echo $JPETSTOREWEB
-          docker build -t $JPETSTOREWEB ./jpetstore
-          docker build -t $JPETSTOREDB .
-          docker login $MCMPDEMO_DOCKER -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-          docker push $JPETSTOREWEB
-          docker push $JPETSTOREDB
+          docker build -t ${{env.JPETSTOREWEB}} ./jpetstore
+          docker build -t ${{env.JPETSTOREDB}} .
+          docker login ${{env.MCMPDEMO_DOCKER}} -u ${{env.DOCKER_USERNAME}} -p ${{env.DOCKER_PASSWORD}}
+          docker push ${{env.JPETSTOREWEB}}
+          docker push ${{env.JPETSTOREDB}}
