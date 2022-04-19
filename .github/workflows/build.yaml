@@ -22,7 +22,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     outputs:
-      build_number: ${{ steps.buildnumber.outputs.build_number }}
+      build_number: ${{ steps.build_number.outputs.build_number }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -31,6 +31,7 @@ jobs:
         run: echo "SHORT_SHA=`git rev-parse --short HEAD`" >> $GITHUB_ENV
 
       - name: Generate build number
+        id: build_number
         uses: einaregilsson/build-number@v3
         with:
           token: ${{secrets.github_token}}
