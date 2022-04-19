@@ -19,7 +19,7 @@ env:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "Build"
-  Build:
+  build:
     runs-on: ubuntu-latest
     outputs:
       build_number: ${{ steps.buildnumber.outputs.build_number }}
@@ -54,8 +54,9 @@ jobs:
           docker push ${{env.JPETSTOREWEB}}:latest
           docker push ${{env.JPETSTOREDB}}:${{env.BUILD_TAG}}
           docker push ${{env.JPETSTOREDB}}:latest
-  Test:
+  test:
     runs-on: ubuntu-latest
+    needs: [Build]
     steps:
       - name: Testing
-        run: echo ${{needs.Build.outputs.build_number}}
+        run: echo ${{needs.build.outputs.build_number}}
