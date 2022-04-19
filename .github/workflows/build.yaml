@@ -28,6 +28,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Setting Github Short SHA & TIMESTAMP
+        run: |
           echo "SHORT_SHA=`git rev-parse --short HEAD`" >> $GITHUB_ENV
           echo "TIMESTAMP=`date -u +%Y%m%d%H%M%S`" >> $GITHUB_ENV
 
