@@ -25,9 +25,11 @@ jobs:
       build_number: ${{ steps.buildnumber.outputs.build_number }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2\
+        uses: actions/checkout@v2
+
       - name: Setting Github Short SHA
         run: echo "SHORT_SHA=`git rev-parse --short HEAD`" >> $GITHUB_ENV
+
       - name: Generate build number
         uses: einaregilsson/build-number@v3
         with:
