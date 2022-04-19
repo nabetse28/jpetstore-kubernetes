@@ -27,12 +27,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Setting Github Short SHA & TIMESTAMP & BRANCH_NAME
-        run: |
+      - name: Setting Github Short SHA & TIMESTAMP
           echo "SHORT_SHA=`git rev-parse --short HEAD`" >> $GITHUB_ENV
           echo "TIMESTAMP=`date -u +%Y%m%d%H%M%S`" >> $GITHUB_ENV
-          echo "BRANCH_NAME=$(echo $GITHUB_REF | cut -d'/' -f 3)" >> $GITHUB_ENV
-          echo ${{github.ref_name}}
 
       - name: Generate build number
         id: build_number
@@ -50,7 +47,7 @@ jobs:
         env:
           JPETSTOREWEB: ${{env.DOCKER_USERNAME}}/jpetstoreweb
           JPETSTOREDB: ${{env.DOCKER_USERNAME}}/jpetstoredb
-          BUILD_TAG: ${{env.BUILD_NUMBER}}-${{env.BRANCH_NAME}}-${{env.SHORT_SHA}}-${{env.TIMESTAMP}}
+          BUILD_TAG: ${{env.BUILD_NUMBER}}-${{github.ref_name}}-${{env.SHORT_SHA}}-${{env.TIMESTAMP}}
         run: |
           echo "Building docker images..."
           docker build -t ${{env.JPETSTOREWEB}}:${{env.BUILD_TAG}} -t ${{env.JPETSTOREWEB}}:latest ./jpetstore
