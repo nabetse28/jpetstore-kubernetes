@@ -16,7 +16,6 @@ env:
   DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
   DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
   HELM_PATH: './helm/modernpets/'
-  NAMESPACE: 'jpetstore'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -121,14 +120,20 @@ jobs:
       #       isDBAAS:True
       #       isLB:False
       #     helm-version: 'latest'
+
+      # Running the java test with ant command
       - name: Testing jpetstore application
         run: |
           cd jpetstore
           ant runtest
-      - name: Deploying into AKS
-        run: |
-          pwd
 
-#          helm version
-#          kubectl delete job jpetstoredb --ignore-not-found -n ${{env.NAMESPACE}}
-#          helm package --destination ~/modernpets ./helm/modernpets
+      # Deploying application into AKS
+      - name: Deploying AKS
+        env:
+          WORKDIR: /home/runner/work/jpetstore-kubernetes
+          NAMESPACE: 'jpetstore'
+        run: |
+          helm version
+          kubectl delete job jpetstoredb --ignore-not-found -n ${{env.NAMESPACE}}
+          helm package --destination ${{env.WORKDIR}}/modernpets ./helm/modernpets
+          helm upgrade --install --wait --set image.repository=${{env.DOCKER_USERNAME}} --set image.tag='latest' --set mysql.url=${{secrets.MYSQL_URL}} --set mysql.username=${{secrets.MYSQL_USER}} --set mysql.password=${{secrets.MYSQL_PASSWORD}} --set isDBAAS=True --set isLB=False --set httpHost=${{secrets.PETSTORE_HOST}} --namespace=${{env.NAMESPACE}} --create-namespace ${{env.NAMESPACE}} ${{env.WORKDIR}}/modernpets/modernpets-0.1.5.tgz
