@@ -121,11 +121,18 @@ jobs:
       #       isDBAAS:True
       #       isLB:False
       #     helm-version: 'latest'
-
-      - name: Testing helm
+      - name: Testing jpetstore application
         run: |
-          helm version
           cd jpetstore
           ant runtest
-          cd ..
-          kubectl delete job jpetstoredb --ignore-not-found -n ${{env.NAMESPACE}}
+      - name: Deploying into AKS
+        run: |
+          ls
+          cd jpetstore
+          ls
+          cd ~
+          ls
+          helm version
+
+#          kubectl delete job jpetstoredb --ignore-not-found -n ${{env.NAMESPACE}}
+#          helm package --destination $JENKINS_HOME/modernpets ./helm/modernpets
