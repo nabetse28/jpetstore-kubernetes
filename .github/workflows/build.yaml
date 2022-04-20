@@ -63,8 +63,8 @@ jobs:
           docker push ${{env.JPETSTOREDB}}:${{env.BUILD_TAG}}
           docker push ${{env.JPETSTOREDB}}:latest
 
-  # Job used for testing new actions
-  test:
+  # Job used for deploy app to AKS
+  deploy:
     runs-on: ubuntu-latest
     needs: [Build]
     steps:
