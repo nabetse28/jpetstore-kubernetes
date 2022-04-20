@@ -128,5 +128,4 @@ jobs:
           cd jpetstore
           ant runtest
           cd ..
-          kubectl config use-context
           kubectl delete job jpetstoredb --ignore-not-found -n ${{env.NAMESPACE}}
