@@ -104,5 +104,7 @@ jobs:
           # overrides: |
           #   replicas:2
           helm-version: 'latest'
+
+      - name: Testing helm
         run: |
           helm --version
