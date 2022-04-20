@@ -127,12 +127,8 @@ jobs:
           ant runtest
       - name: Deploying into AKS
         run: |
-          ls
-          cd jpetstore
-          ls
-          cd ~
-          ls
-          helm version
+          pwd
 
+#          helm version
 #          kubectl delete job jpetstoredb --ignore-not-found -n ${{env.NAMESPACE}}
-#          helm package --destination $JENKINS_HOME/modernpets ./helm/modernpets
+#          helm package --destination ~/modernpets ./helm/modernpets
