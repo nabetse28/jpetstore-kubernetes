@@ -142,3 +142,16 @@ jobs:
           echo app running at $app_decoded
           chmod +x result.sh
           ./result.sh $app
+
+      - name: Creating monitoring apps
+        run: |
+          ns=$(kubectl get ns | grep monitoring | awk '{print $1}')
+          if [ -z "$ns" ] || [ "$ns" != "monitoring" ]; then
+            kubectl create ns monitoring
+              kubectl apply -f ./prometheus -n monitoring
+              sleep 1m
+              kubectl apply -f ./alertmanager/AlertManagerConfigmap.yaml -n monitoring
+              kubectl apply -f ./alertmanager/AlertTemplateConfigMap.yaml -n monitoring
+              kubectl apply -f ./alertmanager/Deployment.yaml -n monitoring
+              kubectl apply -f ./alertmanager/Service.yaml -n monitoring
+          fi
