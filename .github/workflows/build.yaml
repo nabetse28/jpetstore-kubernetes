@@ -16,6 +16,7 @@ env:
   DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
   DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
   HELM_PATH: './helm/modernpets/'
+  NAMESPACE: 'jpetstore'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -126,3 +127,5 @@ jobs:
           helm version
           cd jpetstore
           ant runtest
+          cd ..
+          kubectl delete job jpetstoredb --ignore-not-found -n ${{env.NAMESPACE}} --kubeconfig ${{secrets.KUBECONFIG}}

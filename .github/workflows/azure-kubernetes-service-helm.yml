@@ -1,64 +1,62 @@
-name: Build and deploy an app to AKS with Helm
+# name: Build and deploy an app to AKS with Helm
 
-on:
-  push:
-    branches:
-      - master
-  workflow_dispatch:
+# on:
+#   push:
+#     branches:
+#       - master
+#   workflow_dispatch:
 
-env:
-  RESOURCE_GROUP: "jpservitagsg1"
-  CLUSTER_NAME: "petstorAKSCluster"
-  CHART_PATH: "helm/modernpets"
-  IMAGE: "mcmpdemo/jpetstoredb:latest"
-  CHART_OVERRIDE_PATH: ""
+# env:
+#   RESOURCE_GROUP: "jpservitagsg1"
+#   CLUSTER_NAME: "petstorAKSCluster"
+#   CHART_PATH: "helm/modernpets"
+#   IMAGE: "mcmpdemo/jpetstoredb:latest"
+#   CHART_OVERRIDE_PATH: ""
 
+# jobs:
+#   deploy:
+#     permissions:
+#       actions: read
+#       contents: read
+#       id-token: write
 
-jobs:
-  deploy:
-    permissions:
-      actions: read
-      contents: read
-      id-token: write
-      
-    runs-on: ubuntu-latest
-    steps:
-    # Checks out the repository this file is in
-    - uses: actions/checkout@v3
-    
-    # Logs in with your Azure credentials
-    - name: Azure login
-      uses: azure/login@v1.4.3
-      with:
-        client-id: ${{ secrets.AZURE_CLIENT_ID }}
-        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-    
-    # Retrieves your Azure Kubernetes Service cluster's kubeconfig file
-    - name: Get K8s context
-      uses: azure/aks-set-context@v2.0
-      with:
-        resource-group: ${{ env.RESOURCE_GROUP }}
-        cluster-name: ${{ env.CLUSTER_NAME }}
+#     runs-on: ubuntu-latest
+#     steps:
+#     # Checks out the repository this file is in
+#     - uses: actions/checkout@v3
 
+#     # Logs in with your Azure credentials
+#     - name: Azure login
+#       uses: azure/login@v1.4.3
+#       with:
+#         client-id: ${{ secrets.AZURE_CLIENT_ID }}
+#         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+#         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-    # Runs Helm to create manifest files
-    - name: Bake deployment
-      uses: azure/k8s-bake@v2.1
-      with:
-        renderEngine: 'helm'
-        helmChart: ${{ env.CHART_PATH }}
-        overrideFiles: ${{ env.CHART_OVERRIDE_PATH }}
-        overrides: |     
-          replicas:2
-        helm-version: 'latest' 
-      id: bake
+#     # Retrieves your Azure Kubernetes Service cluster's kubeconfig file
+#     - name: Get K8s context
+#       uses: azure/aks-set-context@v2.0
+#       with:
+#         resource-group: ${{ env.RESOURCE_GROUP }}
+#         cluster-name: ${{ env.CLUSTER_NAME }}
 
-    # Deploys application based on manifest files from previous step
-    - name: Deploy application
-      uses: Azure/k8s-deploy@v3.0
-      with:
-        action: deploy
-        manifests: ${{ steps.bake.outputs.manifestsBundle }}
-        images: |
-          ${{ env.IMAGE }}
+#     # Runs Helm to create manifest files
+#     - name: Bake deployment
+#       uses: azure/k8s-bake@v2.1
+#       with:
+#         renderEngine: 'helm'
+#         helmChart: ${{ env.CHART_PATH }}
+#         overrideFiles: ${{ env.CHART_OVERRIDE_PATH }}
+#         overrides: |
+#           replicas:2
+#         helm-version: 'latest'
+#       id: bake
+
+#     # Deploys application based on manifest files from previous step
+#     - name: Deploy application
+#       uses: Azure/k8s-deploy@v3.0
+#       with:
+#         action: deploy
+#         manifests: ${{ steps.bake.outputs.manifestsBundle }}
+#         images: |
+#           ${{ env.IMAGE }}
