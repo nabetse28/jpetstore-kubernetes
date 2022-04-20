@@ -107,4 +107,4 @@ jobs:
 
       - name: Testing helm
         run: |
-          helm --version
+          helm version
