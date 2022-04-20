@@ -92,16 +92,20 @@ jobs:
           resource-group: ${{secrets.AZURE_RESOURCE_GROUP}}
           cluster-name: ${{secrets.AZURE_CLUSTER_NAME}}
 
-      - name: Setting up helm environment
-        uses: azure/k8s-bake@v2
-        id: bake
-        with:
-          renderEngine: 'helm'
-          helmChart: ${{env.HELM_PATH}}
-          # overrideFiles: './aks-helloworld/values-override.yaml'
-          # overrides: |
-          #   replicas:2
-          helm-version: 'latest'
+      # - name: Setting up helm environment
+      #   uses: azure/k8s-bake@v2
+      #   id: bake
+      #   with:
+      #     renderEngine: 'helm'
+      #     helmChart: ${{env.HELM_PATH}}
+      #     overrideFiles: ${{env.HELM_PATH}}values.yaml
+      #     overrides: |
+      #       image.repository:${{env.DOCKER_USERNAME}}/
+      #       image.tag:${{needs.build.outputs.build_number}}
+      #       mysql.url:
+      #       isDBAAS:True
+      #       isLB:False
+      #     helm-version: 'latest'
 
       - name: Testing helm
         run: |
