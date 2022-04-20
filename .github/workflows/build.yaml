@@ -106,21 +106,6 @@ jobs:
           resource-group: ${{secrets.AZURE_RESOURCE_GROUP}}
           cluster-name: ${{secrets.AZURE_CLUSTER_NAME}}
 
-      # - name: Setting up helm environment
-      #   uses: azure/k8s-bake@v2
-      #   id: bake
-      #   with:
-      #     renderEngine: 'helm'
-      #     helmChart: ${{env.HELM_PATH}}
-      #     overrideFiles: ${{env.HELM_PATH}}values.yaml
-      #     overrides: |
-      #       image.repository:${{env.DOCKER_USERNAME}}/
-      #       image.tag:${{needs.build.outputs.build_number}}
-      #       mysql.url:
-      #       isDBAAS:True
-      #       isLB:False
-      #     helm-version: 'latest'
-
       # Running the java test with ant command
       - name: Testing jpetstore application
         run: |
@@ -134,24 +119,25 @@ jobs:
           NAMESPACE: 'jpetstore'
         run: |
           helm version
-          kubectl delete job jpetstoredb --ignore-not-found -n ${{env.NAMESPACE}}
+          kubectl delete job jpetstoredb --ignore-not-found -n ${{env.NAMESPACE}} --kubeconfig ${{env.KUBECONFIG}}
           helm package --destination ${{env.WORKDIR}}/modernpets ./helm/modernpets
-          helm upgrade --install --wait --set image.repository=${{env.DOCKER_USERNAME}} --set image.tag='latest' --set mysql.url=${{secrets.MYSQL_URL}} --set mysql.username=${{secrets.MYSQL_USER}} --set mysql.password=${{secrets.MYSQL_PASSWORD}} --set isDBAAS=True --set isLB=False --set httpHost=${{secrets.PETSTORE_HOST}} --namespace=${{env.NAMESPACE}} --create-namespace ${{env.NAMESPACE}} ${{env.WORKDIR}}/modernpets/modernpets-0.1.5.tgz
-          app=$(kubectl get  ingress -n ${{env.NAMESPACE}} | base64 | tr -d '\r')
-          app_decoded=$(kubectl get  ingress -n ${{env.NAMESPACE}} | tr -d '\r')
+          helm upgrade --install --wait --set image.repository=${{env.DOCKER_USERNAME}} --set image.tag='latest' --set mysql.url=${{secrets.MYSQL_URL}} --set mysql.username=${{secrets.MYSQL_USER}} --set mysql.password=${{secrets.MYSQL_PASSWORD}} --set isDBAAS=True --set isLB=False --set httpHost=${{secrets.PETSTORE_HOST}} --namespace=${{env.NAMESPACE}} --create-namespace ${{env.NAMESPACE}} ${{env.WORKDIR}}/modernpets/modernpets-0.1.5.tgz --kubeconfig ${{env.KUBECONFIG}}
+          app=$(kubectl get  ingress -n ${{env.NAMESPACE}} --kubeconfig ${{env.KUBECONFIG}} | base64 | tr -d '\r')
+          app_decoded=$(kubectl get  ingress -n ${{env.NAMESPACE}} --kubeconfig ${{env.KUBECONFIG}} | tr -d '\r')
           echo app running at $app_decoded
           chmod +x result.sh
           ./result.sh $app
 
+      # Deploys all the monitoring yaml files into monitoring namespace
       - name: Creating monitoring apps
         run: |
-          ns=$(kubectl get ns | grep monitoring | awk '{print $1}')
+          ns=$(kubectl get ns --kubeconfig ${{env.KUBECONFIG}} | grep monitoring | awk '{print $1}')
           if [ -z "$ns" ] || [ "$ns" != "monitoring" ]; then
-            kubectl create ns monitoring
-              kubectl apply -f ./prometheus -n monitoring
+              kubectl create ns monitoring --kubeconfig ${{env.KUBECONFIG}}
+              kubectl apply -f ./prometheus -n monitoring --kubeconfig ${{env.KUBECONFIG}}
               sleep 1m
-              kubectl apply -f ./alertmanager/AlertManagerConfigmap.yaml -n monitoring
-              kubectl apply -f ./alertmanager/AlertTemplateConfigMap.yaml -n monitoring
-              kubectl apply -f ./alertmanager/Deployment.yaml -n monitoring
-              kubectl apply -f ./alertmanager/Service.yaml -n monitoring
+              kubectl apply -f ./alertmanager/AlertManagerConfigmap.yaml -n monitoring --kubeconfig ${{env.KUBECONFIG}}
+              kubectl apply -f ./alertmanager/AlertTemplateConfigMap.yaml -n monitoring --kubeconfig ${{env.KUBECONFIG}}
+              kubectl apply -f ./alertmanager/Deployment.yaml -n monitoring --kubeconfig ${{env.KUBECONFIG}}
+              kubectl apply -f ./alertmanager/Service.yaml -n monitoring --kubeconfig ${{env.KUBECONFIG}}
           fi
