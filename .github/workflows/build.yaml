@@ -139,7 +139,6 @@ jobs:
           helm upgrade --install --wait --set image.repository=${{env.DOCKER_USERNAME}} --set image.tag='latest' --set mysql.url=${{secrets.MYSQL_URL}} --set mysql.username=${{secrets.MYSQL_USER}} --set mysql.password=${{secrets.MYSQL_PASSWORD}} --set isDBAAS=True --set isLB=False --set httpHost=${{secrets.PETSTORE_HOST}} --namespace=${{env.NAMESPACE}} --create-namespace ${{env.NAMESPACE}} ${{env.WORKDIR}}/modernpets/modernpets-0.1.5.tgz
           app=$(kubectl get  ingress -n ${{env.NAMESPACE}} | base64 | tr -d '\r')
           app_decoded=$(kubectl get  ingress -n ${{env.NAMESPACE}} | tr -d '\r')
-          echo $app_decoded
-          echo app running at ${{env.app_decoded}}
+          echo app running at $app_decoded
           chmod +x result.sh
-          ./result.sh ${{env.app}}
+          ./result.sh $app
