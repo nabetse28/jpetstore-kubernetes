@@ -73,7 +73,9 @@ jobs:
 
       # Getting the build number for previous job
       - name: Getting build number from above job
-        run: echo ${{needs.build.outputs.build_number}}
+        run: |
+          echo ${{needs.build.outputs.build_number}}
+          echo ${{env.GITHUB_RUN_NUMBER}}
 
       # Configuring Java version to run test
       - name: Set up JDK 11
@@ -111,6 +113,14 @@ jobs:
         run: |
           cd jpetstore
           ant runtest
+
+      # Save unit test into artifact
+      - name: Archive unit test artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: unit-test
+          path: |
+            jpetstore/build/reports/TEST-*.xml
 
       # Deploying application into AKS
       - name: Deploying AKS
