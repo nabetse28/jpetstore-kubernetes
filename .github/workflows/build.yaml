@@ -75,7 +75,7 @@ jobs:
       - name: Getting build number from above job
         run: |
           echo ${{needs.build.outputs.build_number}}
-          echo ${{github.GITHUB_RUN_NUMBER}}
+          echo ${{github.run_number}}
 
       # Configuring Java version to run test
       - name: Set up JDK 11
