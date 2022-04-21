@@ -174,9 +174,9 @@ jobs:
           ls | grep *.xml
 
       - name: Publish build information to IBM DevOps Intelligence
-        with:
-          status: ${{ env.WORKFLOW_CONCLUSION }} # neutral, success, cancelled, timed_out, failure
-          # status: failure
+        # with:
+        #   status: ${{ env.WORKFLOW_CONCLUSION }} # neutral, success, cancelled, timed_out, failure
+        # status: failure
         # if: env.WORKFLOW_CONCLUSION == 'failure' # notify only if failure
         run: |
           echo ${{env.WORKFLOW_CONCLUSION}}
